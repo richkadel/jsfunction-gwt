@@ -54,7 +54,7 @@ public final class JsFunction extends JavaScriptObject {
    */
   public static native JsFunction create(NoArgsFunction func) /*-{
     return function() {
-      @org.cesiumjs.js.JsFunction::invoke(Lorg/cesiumjs/js/NoArgsFunction;)(func)
+      @jsfunction.JsFunction::invoke(Lorg/cesiumjs/js/NoArgsFunction;)(func)
     }
   }-*/;
   
@@ -64,7 +64,7 @@ public final class JsFunction extends JavaScriptObject {
    */
   public static native JsFunction create(NoArgsFunctionReturn<?> func) /*-{
     return function() {
-      return @org.cesiumjs.js.JsFunction::invoke(Lorg/cesiumjs/js/NoArgsFunctionReturn;)(func)
+      return @jsfunction.JsFunction::invoke(Lorg/cesiumjs/js/NoArgsFunctionReturn;)(func)
     }
   }-*/;
   
@@ -74,7 +74,7 @@ public final class JsFunction extends JavaScriptObject {
    */
   public static native JsFunction create(EventListener<?> eventListener) /*-{
     return function(event) {
-      @org.cesiumjs.js.JsFunction::invoke(Lorg/cesiumjs/js/EventListener;Lcom/google/gwt/core/client/JavaScriptObject;)(eventListener, event)
+      @jsfunction.JsFunction::invoke(Lorg/cesiumjs/js/EventListener;Lcom/google/gwt/core/client/JavaScriptObject;)(eventListener, event)
     }
   }-*/;
   
@@ -84,7 +84,7 @@ public final class JsFunction extends JavaScriptObject {
    */
   public static native JsFunction create(JsReturn<?> deferredFunctionResult) /*-{
     return function(result) {
-      @org.cesiumjs.js.JsFunction::invoke(Lorg/cesiumjs/js/JsReturn;Lorg/cesiumjs/js/ReturnValue;)(deferredFunctionResult, result)
+      @jsfunction.JsFunction::invoke(Lorg/cesiumjs/js/JsReturn;Lorg/cesiumjs/js/ReturnValue;)(deferredFunctionResult, result)
     }
   }-*/;
   
@@ -97,7 +97,7 @@ public final class JsFunction extends JavaScriptObject {
   public static native JsFunction create(VarArgsFunction func) /*-{
     return function() {
       var argumentsArray = Array.prototype.slice.apply(arguments);
-      @org.cesiumjs.js.JsFunction::invoke(Lorg/cesiumjs/js/VarArgsFunction;Lcom/google/gwt/core/client/JsArrayMixed;)(func, argumentsArray)
+      @jsfunction.JsFunction::invoke(Lorg/cesiumjs/js/VarArgsFunction;Lcom/google/gwt/core/client/JsArrayMixed;)(func, argumentsArray)
     }
   }-*/;
   
@@ -110,7 +110,7 @@ public final class JsFunction extends JavaScriptObject {
   public static native JsFunction create(VarArgsFunctionReturn<?> func) /*-{
     return function() {
       var argumentsArray = Array.prototype.slice.apply(arguments);
-      return @org.cesiumjs.js.JsFunction::invoke(Lorg/cesiumjs/js/VarArgsFunctionReturn;Lcom/google/gwt/core/client/JsArrayMixed;)(func, argumentsArray)
+      return @jsfunction.JsFunction::invoke(Lorg/cesiumjs/js/VarArgsFunctionReturn;Lcom/google/gwt/core/client/JsArrayMixed;)(func, argumentsArray)
     }
   }-*/;
   
