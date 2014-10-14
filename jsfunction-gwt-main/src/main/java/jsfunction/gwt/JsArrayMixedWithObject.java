@@ -1,4 +1,4 @@
-package jsfunction;
+package jsfunction.gwt;
 
 import com.google.gwt.core.client.JsArrayMixed;
 
@@ -20,6 +20,8 @@ import com.google.gwt.core.client.JsArrayMixed;
  * a fatal error in the program. Use with caution.
  */
 public class JsArrayMixedWithObject extends JsArrayMixed {
+  
+  protected JsArrayMixedWithObject() {}
 
   public final native void push(Object value) /*-{
     this[this.length] = value;

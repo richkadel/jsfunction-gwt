@@ -1,4 +1,4 @@
-package jsfunction;
+package jsfunction.gwt;
 
 public abstract class JsReturn<T> {
 

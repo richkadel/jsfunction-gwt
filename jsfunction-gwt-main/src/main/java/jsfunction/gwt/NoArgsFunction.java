@@ -1,4 +1,4 @@
-package jsfunction;
+package jsfunction.gwt;
 
 public interface NoArgsFunction {
 

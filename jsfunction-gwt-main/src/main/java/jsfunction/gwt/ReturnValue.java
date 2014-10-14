@@ -1,4 +1,4 @@
-package jsfunction;
+package jsfunction.gwt;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
