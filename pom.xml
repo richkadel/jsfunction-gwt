@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <properties>
+    <!-- I should not have to set this, but for some reason it's not set automatically -->
+    <settings.localRepository>${user.home}/.m2/repository</settings.localRepository>
+
+    <gwtVersion>2.6.1</gwtVersion>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!--
+    <jsFunctionGwtVersion>0.0.1</jsFunctionGwtVersion>
+    -->
+    <jsFunctionGwtVersion>0.0.1-SNAPSHOT</jsFunctionGwtVersion>
+  </properties>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jsfunction</groupId>
+  <artifactId>jsfunction-gwt</artifactId>
+  <version>${jsFunctionGwtVersion}</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>jsfunction-gwt-main</module>
+    <module>jsfunction-gwt-test</module>
+  </modules>
+</project>

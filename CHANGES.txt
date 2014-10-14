@@ -1,0 +1,11 @@
+
+
+Release 0.0.1
+
+* First Release:
+
+  - This library was migrated from the Cesium-GWT project to its own reusable JsFunction.GWT project
+    that is not dependent on Cesium-GWT. However, Cesium-GWT will depend on this library.
+  
+  
+  
