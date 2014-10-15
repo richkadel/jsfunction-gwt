@@ -1,10 +1,14 @@
 package jsfunction.gwt;
 
-public abstract class JsReturn<T> {
+import com.google.gwt.core.client.JavaScriptObject;
 
-  public void onReturn(ReturnValue<T> returnValue) {
+public abstract class JsReturn<T extends JavaScriptObject> {
+
+  public void onReturn(JsReturnValue<T> returnValue) {
     onReturn(returnValue.get());
   }
 
   public abstract void onReturn(T returnValue);
+  
+  public abstract void onError(JsError jsError);
 }

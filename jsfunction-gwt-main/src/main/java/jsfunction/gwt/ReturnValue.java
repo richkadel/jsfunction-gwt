@@ -3,12 +3,12 @@ package jsfunction.gwt;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * This class allows Java Objects to be returned from JavaScript methods,
+ * This class allows Java Objects to be returned from JavaScript methods, 
  * which is allowed in GWT but only if those values are handled opaquely.
  * If there is a chance the invoked method will be transforming objects
  * to/from JSON strings (e.g., to pass objects between different browser
- * scopes or to/from servers) then you should restrict your ReturnValue
- * implementations to JavaScriptObject or accepted primitives.
+ * scopes or to/from servers) then you should use JsReturnValue
+ * to restrict return values to JavaScriptObject or accepted primitives.
  */
 public final class ReturnValue<T> extends JavaScriptObject {
   
@@ -31,6 +31,26 @@ public final class ReturnValue<T> extends JavaScriptObject {
       value : value
     }
   }-*/;
+  
+  public static ReturnValue<Boolean> create(Boolean value) {
+    return create(value.booleanValue());
+  }
+  
+  public static ReturnValue<Integer> create(Byte value) {
+    return create(value.intValue());
+  }
+  
+  public static ReturnValue<Integer> create(Short value) {
+    return create(value.intValue());
+  }
+  
+  public static ReturnValue<Integer> create(Integer value) {
+    return create(value.intValue());
+  }
+  
+  public static ReturnValue<Double> create(Number value) {
+    return create(value.doubleValue());
+  }
   
   public static native ReturnValue<Boolean> create(boolean value) /*-{
     return {
@@ -59,7 +79,7 @@ public final class ReturnValue<T> extends JavaScriptObject {
     } else if (isString()) {
       return (T)String.valueOf(asString());
     } else {
-      return (T)asObject();
+      return (T)asJavaScriptObject();
     }
   }
   
@@ -68,7 +88,9 @@ public final class ReturnValue<T> extends JavaScriptObject {
   }-*/;
   
   public native JavaScriptObject asJavaScriptObject() /*-{
-    return this.value != null ? Object(this.value) : null;
+    // I don't know what this will do to Java Objects, and get() cannot be overridden, so I will just return the object reference
+//    return this.value != null ? Object(this.value) : null;
+    return this.value;
   }-*/;
   
   public native String asString() /*-{
@@ -87,15 +109,15 @@ public final class ReturnValue<T> extends JavaScriptObject {
     return Boolean(this.value);
   }-*/;
   
-  private native boolean isNumber() /*-{
+  protected native boolean isNumber() /*-{
     return typeof this.value === 'number';
   }-*/;
 
-  private native boolean isBoolean() /*-{
+  protected native boolean isBoolean() /*-{
     return typeof this.value === 'boolean';
   }-*/;
 
-  private native boolean isString() /*-{
+  protected native boolean isString() /*-{
     return typeof this.value === 'string';
   }-*/;
 }

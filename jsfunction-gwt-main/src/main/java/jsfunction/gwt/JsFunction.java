@@ -22,21 +22,18 @@ public final class JsFunction extends JavaScriptObject {
   }
   
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  private static void invoke(JsReturn deferredFunctionResult, ReturnValue result) {
+  private static void invoke(JsReturn deferredFunctionResult, JsReturnValue result) {
     deferredFunctionResult.onReturn(result);
+  }
+  
+  @SuppressWarnings({ "rawtypes" })
+  private static void error(JsReturn deferredFunctionResult, JsError error) {
+    deferredFunctionResult.onError(error);
   }
   
   private static void invoke(VarArgsFunction varArgsFunction, JsArrayMixed args) {
     varArgsFunction.callback(args);
   }
-  
-//  private static <T> ReturnValue<T> invoke(VarArgsFunctionReturn<T> varArgsFunctionReturn, JsArrayMixed args) {
-//    return varArgsFunctionReturn.callAndReturnValue(args);
-//  }
-//  
-//  private static <T> ReturnValue<T> invoke(NoArgsFunctionReturn<T> noArgsFunctionReturn) {
-//    return noArgsFunctionReturn.callAndReturnValue();
-//  }
   
   @SuppressWarnings({ "rawtypes" })
   private static ReturnValue invoke(VarArgsFunctionReturn varArgsFunctionReturn, JsArrayMixed args) {
@@ -46,6 +43,16 @@ public final class JsFunction extends JavaScriptObject {
   @SuppressWarnings({ "rawtypes" })
   private static ReturnValue invoke(NoArgsFunctionReturn noArgsFunctionReturn) {
     return noArgsFunctionReturn.callAndReturnValue();
+  }
+  
+  @SuppressWarnings({ "rawtypes" })
+  private static JsReturnValue invoke(VarArgsFunctionJsReturn varArgsFunctionJsReturn, JsArrayMixed args) {
+    return varArgsFunctionJsReturn.callAndJsReturnValue(args);
+  }
+  
+  @SuppressWarnings({ "rawtypes" })
+  private static JsReturnValue invoke(NoArgsFunctionJsReturn noArgsFunctionJsReturn) {
+    return noArgsFunctionJsReturn.callAndJsReturnValue();
   }
   
   /**
@@ -69,6 +76,16 @@ public final class JsFunction extends JavaScriptObject {
   }-*/;
   
   /**
+   * @param func The instance function to call from JSNI
+   * @return a GWT reference to an actual JavaScript function pointer
+   */
+  public static native JsFunction create(NoArgsFunctionJsReturn<?> func) /*-{
+    return function() {
+      return @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/NoArgsFunctionJsReturn;)(func)
+    }
+  }-*/;
+  
+  /**
    * @param eventListener The instance eventListener to call from JSNI, taking a single event object, when invoked
    * @return a GWT reference to an actual JavaScript function pointer
    */
@@ -79,12 +96,22 @@ public final class JsFunction extends JavaScriptObject {
   }-*/;
   
   /**
-   * @param deferredFunctionResult The instance deferredFunctionResult to call from JSNI, taking a single result object, when invoked
+   * @param deferredFunctionResult The instance deferredFunctionResult to call from JSNI, taking a single result object, when invoked.
+   * Use JsReturnVoid to be informed of function completion, or to catch any Exception.
+   * Typical methods that take a JsReturn<T> argument have accompanying versions that
+   * take no JsResult parameter for void methods that don't return a value. These are
+   * "fire and forget" methods that are expected to succeed, but if they don't,
+   * use the version that takes a JsReturn with JsReturn<Void> to catch exceptions.
    * @return a GWT reference to an actual JavaScript function pointer
    */
-  public static native JsFunction create(JsReturn<?> deferredFunctionResult) /*-{
-    return function(result) {
-      @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/JsReturn;Ljsfunction/gwt/ReturnValue;)(deferredFunctionResult, result)
+  public static native JsResultOrError create(JsReturn<?> deferredFunctionResult) /*-{
+    return {
+      result : function(result) {
+        @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/JsReturn;Ljsfunction/gwt/JsReturnValue;)(deferredFunctionResult, result)
+      },
+      error : function(error) {
+        @jsfunction.gwt.JsFunction::error(Ljsfunction/gwt/JsReturn;Ljsfunction/gwt/JsError;)(deferredFunctionResult, error)
+      }
     }
   }-*/;
   
@@ -103,7 +130,7 @@ public final class JsFunction extends JavaScriptObject {
   
   /**
    * @param func The instance function to call from JSNI, which may be called
-   * with multiple arguments and should return a ReturnValue. When invoked, 
+   * with multiple arguments and should return a JsReturnValue. When invoked, 
    * JsFunction packages the arguments into a JavaScript array.
    * @return a GWT reference to an actual JavaScript function pointer
    */
@@ -111,6 +138,19 @@ public final class JsFunction extends JavaScriptObject {
     return function() {
       var argumentsArray = Array.prototype.slice.apply(arguments);
       return @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/VarArgsFunctionReturn;Lcom/google/gwt/core/client/JsArrayMixed;)(func, argumentsArray)
+    }
+  }-*/;
+  
+  /**
+   * @param func The instance function to call from JSNI, which may be called
+   * with multiple arguments and should return a JsReturnValue. When invoked, 
+   * JsFunction packages the arguments into a JavaScript array.
+   * @return a GWT reference to an actual JavaScript function pointer
+   */
+  public static native JsFunction create(VarArgsFunctionJsReturn<?> func) /*-{
+    return function() {
+      var argumentsArray = Array.prototype.slice.apply(arguments);
+      return @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/VarArgsFunctionJsReturn;Lcom/google/gwt/core/client/JsArrayMixed;)(func, argumentsArray)
     }
   }-*/;
   
