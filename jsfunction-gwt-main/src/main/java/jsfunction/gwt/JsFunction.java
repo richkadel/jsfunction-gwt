@@ -17,7 +17,7 @@ public final class JsFunction extends JavaScriptObject {
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  private static void invoke(EventListener eventListener, JavaScriptObject event) {
+  private static void invoke(EventListener eventListener, Object event) {
     eventListener.callback(event);
   }
   
@@ -91,7 +91,7 @@ public final class JsFunction extends JavaScriptObject {
    */
   public static native JsFunction create(EventListener<?> eventListener) /*-{
     return function(event) {
-      @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/EventListener;Lcom/google/gwt/core/client/JavaScriptObject;)(eventListener, event)
+      @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/EventListener;Ljava/lang/Object;)(eventListener, event)
     }
   }-*/;
   
@@ -105,7 +105,7 @@ public final class JsFunction extends JavaScriptObject {
    * @return a GWT reference to an actual JavaScript function pointer
    */
   public static native JsResultOrError create(JsReturn<?> deferredFunctionResult) /*-{
-    return {
+    return { // Constructs a JsResultOrError object
       result : function(result) {
         @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/JsReturn;Ljsfunction/gwt/JsReturnValue;)(deferredFunctionResult, result)
       },
