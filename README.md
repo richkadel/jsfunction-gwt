@@ -1,6 +1,8 @@
 jsfunction-gwt
 ==============
 
+See the [full project page](http://richkadel.github.io/jsfunction-gwt) and [JavaDoc](http://richkadel.github.io/jsfunction-gwt/apidocs).
+
 Extensive support for passing GWT Java functions to JavaScript APIs that require JavaScript functions.
 
 This library used to be part of the [Cesium-GWT](http://richkadel.github.io/cesium-gwt/) repository, 
