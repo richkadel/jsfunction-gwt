@@ -7,15 +7,18 @@
     <gwtVersion>2.6.1</gwtVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!--
-    <jsFunctionGwtVersion>0.0.1</jsFunctionGwtVersion>
+    <jsFunctionGwtVersion>1.0.1-SNAPSHOT</jsFunctionGwtVersion>
     -->
-    <jsFunctionGwtVersion>0.0.1-SNAPSHOT</jsFunctionGwtVersion>
+    <jsFunctionGwtVersion>1.0</jsFunctionGwtVersion>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>jsfunction</groupId>
   <artifactId>jsfunction-gwt</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+<!--
+  <version>1.0.1-SNAPSHOT</version>
+-->
+  <version>1.0</version>
   <packaging>pom</packaging>
 
   <modules>

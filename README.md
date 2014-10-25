@@ -52,4 +52,6 @@ _Then we invoke the JavaScript from GWT:_
     }-*/;
 
 
-Also review the [test cases](https://github.com/richkadel/jsfunction-gwt/blob/master/jsfunction-gwt-test/src/main/java/jsfunction/jsfunctiontest/JsFunctionTest.java).
+*For more examples,* review the JsFunctionTest class in the 
+[jsfunction.jsfunctiontest](https://github.com/richkadel/jsfunction-gwt/tree/master/jsfunction-gwt-test/src/main/java/jsfunction/jsfunctiontest)
+test case package.
