@@ -1,11 +1,19 @@
 package jsfunction.gwt;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import jsfunction.gwt.functions.EventListener;
+import jsfunction.gwt.functions.NoArgsFunction;
+import jsfunction.gwt.functions.NoArgsFunctionJsReturn;
+import jsfunction.gwt.functions.NoArgsFunctionReturn;
+import jsfunction.gwt.functions.VarArgsFunction;
+import jsfunction.gwt.functions.VarArgsFunctionJsReturn;
+import jsfunction.gwt.functions.VarArgsFunctionReturn;
+import jsfunction.gwt.returns.JsResultOrError;
+import jsfunction.gwt.returns.JsReturn;
+import jsfunction.gwt.returns.advanced.JsReturnValue;
+import jsfunction.gwt.returns.advanced.ReturnValue;
+import jsfunction.gwt.types.JsError;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 
 public final class JsFunction extends JavaScriptObject {
@@ -61,27 +69,90 @@ public final class JsFunction extends JavaScriptObject {
    */
   public static native JsFunction create(NoArgsFunction func) /*-{
     return function() {
-      @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/NoArgsFunction;)(func)
+      @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/functions/NoArgsFunction;)(func)
     }
   }-*/;
   
   /**
+   * Important! The created function, when invoked by JavaScript, returns a ReturnValue,
+   * which is an object that wraps the actual return value, accessed by the property
+   * name "value". So to get the value, you must do something like the following:
+   * 
+   * funcPointer().value
+   * 
    * @param func The instance function to call from JSNI
    * @return a GWT reference to an actual JavaScript function pointer
    */
   public static native JsFunction create(NoArgsFunctionReturn<?> func) /*-{
     return function() {
-      return @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/NoArgsFunctionReturn;)(func)
+      return @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/functions/NoArgsFunctionReturn;)(func)
     }
   }-*/;
   
   /**
+   * Important! The created function, when invoked by JavaScript, returns a JsReturnValue,
+   * which is an object that wraps the actual return value, accessed by the property
+   * name "value". So to get the value, you must do something like the following:
+   * 
+   * funcPointer().value
+   * 
    * @param func The instance function to call from JSNI
    * @return a GWT reference to an actual JavaScript function pointer
    */
   public static native JsFunction create(NoArgsFunctionJsReturn<?> func) /*-{
     return function() {
-      return @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/NoArgsFunctionJsReturn;)(func)
+      return @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/functions/NoArgsFunctionJsReturn;)(func)
+    }
+  }-*/;
+  
+  /**
+   * @param func The instance function to call from JSNI, which may be called
+   * with multiple arguments. When invoked, JsFunction packages the arguments into a JavaScript 
+   * array.
+   * @return a GWT reference to an actual JavaScript function pointer
+   */
+  public static native JsFunction create(VarArgsFunction func) /*-{
+    return function() {
+      var argumentsArray = Array.prototype.slice.apply(arguments);
+      @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/functions/VarArgsFunction;Lcom/google/gwt/core/client/JsArrayMixed;)(func, argumentsArray)
+    }
+  }-*/;
+  
+  /**
+   * Important! The created function, when invoked by JavaScript, returns a ReturnValue,
+   * which is an object that wraps the actual return value, accessed by the property
+   * name "value". So to get the value, you must do something like the following:
+   * 
+   * funcPointer(args,...).value
+   * 
+   * @param func The instance function to call from JSNI, which may be called
+   * with multiple arguments and should return a ReturnValue. When invoked, 
+   * JsFunction packages the arguments into a JavaScript array.
+   * @return a GWT reference to an actual JavaScript function pointer
+   */
+  public static native JsFunction create(VarArgsFunctionReturn<?> func) /*-{
+    return function() {
+      var argumentsArray = Array.prototype.slice.apply(arguments);
+      return @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/functions/VarArgsFunctionReturn;Lcom/google/gwt/core/client/JsArrayMixed;)(func, argumentsArray)
+    }
+  }-*/;
+  
+  /**
+   * Important! The created function, when invoked by JavaScript, returns a JsReturnValue,
+   * which is an object that wraps the actual return value, accessed by the property
+   * name "value". So to get the value, you must do something like the following:
+   * 
+   * funcPointer(args,...).value
+   * 
+   * @param func The instance function to call from JSNI, which may be called
+   * with multiple arguments and should return a JsReturnValue. When invoked, 
+   * JsFunction packages the arguments into a JavaScript array.
+   * @return a GWT reference to an actual JavaScript function pointer
+   */
+  public static native JsFunction create(VarArgsFunctionJsReturn<?> func) /*-{
+    return function() {
+      var argumentsArray = Array.prototype.slice.apply(arguments);
+      return @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/functions/VarArgsFunctionJsReturn;Lcom/google/gwt/core/client/JsArrayMixed;)(func, argumentsArray)
     }
   }-*/;
   
@@ -91,7 +162,7 @@ public final class JsFunction extends JavaScriptObject {
    */
   public static native JsFunction create(EventListener<?> eventListener) /*-{
     return function(event) {
-      @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/EventListener;Ljava/lang/Object;)(eventListener, event)
+      @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/functions/EventListener;Ljava/lang/Object;)(eventListener, event)
     }
   }-*/;
   
@@ -107,165 +178,11 @@ public final class JsFunction extends JavaScriptObject {
   public static native JsResultOrError create(JsReturn<?> deferredFunctionResult) /*-{
     return { // Constructs a JsResultOrError object
       result : function(result) {
-        @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/JsReturn;Ljsfunction/gwt/JsReturnValue;)(deferredFunctionResult, {value:result})
+        @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/returns/JsReturn;Ljsfunction/gwt/returns/advanced/JsReturnValue;)(deferredFunctionResult, {value:result})
       },
       error : function(error) {
-        @jsfunction.gwt.JsFunction::error(Ljsfunction/gwt/JsReturn;Ljsfunction/gwt/JsError;)(deferredFunctionResult, error)
+        @jsfunction.gwt.JsFunction::error(Ljsfunction/gwt/returns/JsReturn;Ljsfunction/gwt/types/JsError;)(deferredFunctionResult, error)
       }
     }
   }-*/;
-  
-  /**
-   * @param func The instance function to call from JSNI, which may be called
-   * with multiple arguments. When invoked, JsFunction packages the arguments into a JavaScript 
-   * array.
-   * @return a GWT reference to an actual JavaScript function pointer
-   */
-  public static native JsFunction create(VarArgsFunction func) /*-{
-    return function() {
-      var argumentsArray = Array.prototype.slice.apply(arguments);
-      @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/VarArgsFunction;Lcom/google/gwt/core/client/JsArrayMixed;)(func, argumentsArray)
-    }
-  }-*/;
-  
-  /**
-   * @param func The instance function to call from JSNI, which may be called
-   * with multiple arguments and should return a JsReturnValue. When invoked, 
-   * JsFunction packages the arguments into a JavaScript array.
-   * @return a GWT reference to an actual JavaScript function pointer
-   */
-  public static native JsFunction create(VarArgsFunctionReturn<?> func) /*-{
-    return function() {
-      var argumentsArray = Array.prototype.slice.apply(arguments);
-      return @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/VarArgsFunctionReturn;Lcom/google/gwt/core/client/JsArrayMixed;)(func, argumentsArray)
-    }
-  }-*/;
-  
-  /**
-   * @param func The instance function to call from JSNI, which may be called
-   * with multiple arguments and should return a JsReturnValue. When invoked, 
-   * JsFunction packages the arguments into a JavaScript array.
-   * @return a GWT reference to an actual JavaScript function pointer
-   */
-  public static native JsFunction create(VarArgsFunctionJsReturn<?> func) /*-{
-    return function() {
-      var argumentsArray = Array.prototype.slice.apply(arguments);
-      return @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/VarArgsFunctionJsReturn;Lcom/google/gwt/core/client/JsArrayMixed;)(func, argumentsArray)
-    }
-  }-*/;
-  
-  /**
-   * Utility method
-   * @param functionArgs a var args of objects (which can be called with primitives as well, using Java auto boxing).
-   * The only valid argument types are those that match the JsArrayMixed "set()" methods, that is:
-   * double, boolean, string, and JavaScriptObject
-   * @return a JsArrayMixed
-   */
-  public static JsArrayMixed varArgsToMixedArray(Object[] functionArgs) {
-    int len = functionArgs.length;
-    JsArrayMixed mixedArray = JsArrayMixed.createArray(len).cast();
-    for (int i = 0; i < len; i++) {
-      Object arg = functionArgs[i];
-      if (arg instanceof Number) {
-        mixedArray.set(i, ((Number)arg).doubleValue());
-      } else if (arg instanceof Boolean) {
-        mixedArray.set(i, ((Boolean)arg).booleanValue());
-      } else if (arg instanceof String) {
-        mixedArray.set(i, (String)arg);
-      } else {
-        mixedArray.set(i, (JavaScriptObject)arg); 
-      }
-    }
-    return mixedArray;
-  }
-  
-  /**
-   * Utility method
-   * @param mixedArray 
-   * @return an Object array
-   */
-  public static Object[] mixedArrayToObjects(JsArrayMixed mixedArray) {
-    int len = mixedArray.length();
-    List<Object> objects = new ArrayList<Object>(len);
-    for (int i = 0; i < len; i++) {
-      if (elementIsNumber(mixedArray, i)) {
-        objects.add(Double.valueOf(mixedArray.getNumber(i)));
-      } else if (elementIsBoolean(mixedArray, i)) {
-        objects.add(Boolean.valueOf(mixedArray.getBoolean(i)));
-      } else if (elementIsString(mixedArray, i)) {
-        objects.add(String.valueOf(mixedArray.getString(i)));
-      } else {
-        objects.add(String.valueOf(mixedArray.getObject(i)));
-      }
-    }
-    return objects.toArray();
-  }
-
-  /**
-   * Utility method
-   * @param functionArgs a var args of objects (which can be called with primitives as well, using Java auto boxing).
-   * The only valid argument types are those that match the JsArrayMixed "set()" methods, that is:
-   * double, boolean, string, and JavaScriptObject
-   * @return a JsArrayMixed
-   */
-  public static JsArrayMixedWithObject varArgsToMixedArrayWithObject(Object[] functionArgs) {
-    int len = functionArgs.length;
-    JsArrayMixedWithObject mixedArray = JsArrayMixed.createArray(len).cast();
-    for (int i = 0; i < len; i++) {
-      Object arg = functionArgs[i];
-      if (arg instanceof Number) {
-        mixedArray.set(i, ((Number)arg).doubleValue());
-      } else if (arg instanceof Boolean) {
-        mixedArray.set(i, ((Boolean)arg).booleanValue());
-      } else if (arg instanceof String) {
-        mixedArray.set(i, (String)arg);
-      } else {
-        mixedArray.set(i, arg); // does not force conversion to JavaScriptObject
-      }
-    }
-    return mixedArray;
-  }
-  
-  /**
-   * Utility method
-   * @param mixedArray 
-   * @return an Object array
-   */
-  public static Object[] mixedArrayToObjects(JsArrayMixedWithObject mixedArray) {
-    int len = mixedArray.length();
-    List<Object> objects = new ArrayList<Object>(len);
-    for (int i = 0; i < len; i++) {
-      if (elementIsNumber(mixedArray, i)) {
-        objects.add(Double.valueOf(mixedArray.getNumber(i)));
-      } else if (elementIsBoolean(mixedArray, i)) {
-        objects.add(Boolean.valueOf(mixedArray.getBoolean(i)));
-      } else if (elementIsString(mixedArray, i)) {
-        objects.add(String.valueOf(mixedArray.getString(i)));
-      } else {
-        objects.add(String.valueOf(mixedArray.getJavaObject(i))); // less type checking but should work for JavaScriptObject as well
-      }
-    }
-    return objects.toArray();
-  }
-
-  private static native boolean elementIsNumber(JsArrayMixed mixedArray, int i) /*-{
-    return typeof mixedArray[i] === 'number';
-  }-*/;
-
-  private static native boolean elementIsBoolean(JsArrayMixed mixedArray, int i) /*-{
-    return typeof mixedArray[i] === 'boolean';
-  }-*/;
-
-  private static native boolean elementIsString(JsArrayMixed mixedArray, int i) /*-{
-    return typeof mixedArray[i] === 'string';
-  }-*/;
-
-  public static <T extends JavaScriptObject> JsArray<T> toJsArray(Collection<T> collection) {
-    JsArray<T> jsArray = JsArray.createArray(collection.size()).cast();
-    int i = 0;
-    for (T item : collection) {
-      jsArray.set(i++, item);
-    }
-    return jsArray;
-  }
 }

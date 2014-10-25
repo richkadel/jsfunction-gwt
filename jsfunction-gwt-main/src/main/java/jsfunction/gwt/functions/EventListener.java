@@ -1,4 +1,4 @@
-package jsfunction.gwt;
+package jsfunction.gwt.functions;
 
 /**
  * Similar to VarArgsFunction, but this method takes only one argument--the "event object"--following

@@ -1,4 +1,6 @@
-package jsfunction.gwt;
+package jsfunction.gwt.functions;
+
+import jsfunction.gwt.returns.advanced.JsReturnValue;
 
 import com.google.gwt.core.client.JavaScriptObject;
 

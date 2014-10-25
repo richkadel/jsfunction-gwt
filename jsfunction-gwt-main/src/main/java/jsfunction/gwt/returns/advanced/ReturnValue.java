@@ -1,8 +1,13 @@
-package jsfunction.gwt;
+package jsfunction.gwt.returns.advanced;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
+ * This class is for internal JsFunction API use or for more advanced
+ * use cases (see the OWF-GWT library on GitHub, and the WidgetProxyFunction
+ * class for how we use this class to mimic a native JavaScript version
+ * of a JavaScript library).
+ * 
  * This class allows Java Objects to be returned from JavaScript methods, 
  * which is allowed in GWT but only if those values are handled opaquely.
  * If there is a chance the invoked method will be transforming objects

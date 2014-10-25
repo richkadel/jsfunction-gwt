@@ -1,4 +1,4 @@
-package jsfunction.gwt;
+package jsfunction.gwt.functions;
 
 import com.google.gwt.core.client.JsArrayMixed;
 

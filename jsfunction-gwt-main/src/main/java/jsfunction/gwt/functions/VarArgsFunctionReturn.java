@@ -1,4 +1,6 @@
-package jsfunction.gwt;
+package jsfunction.gwt.functions;
+
+import jsfunction.gwt.returns.advanced.ReturnValue;
 
 import com.google.gwt.core.client.JsArrayMixed;
 

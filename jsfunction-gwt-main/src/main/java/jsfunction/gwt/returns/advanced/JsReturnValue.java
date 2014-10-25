@@ -1,19 +1,40 @@
-package jsfunction.gwt;
+package jsfunction.gwt.returns.advanced;
+
+import jsfunction.gwt.types.JsBoolean;
+import jsfunction.gwt.types.JsNumber;
+import jsfunction.gwt.types.JsString;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * This class theoretically allows Java Objects to be returned from JavaScript methods, 
- * which is allowed in GWT but only if those values are handled opaquely.
- * If there is a chance the invoked method will be transforming objects
+ * This class is for internal JsFunction API use or for more advanced
+ * use cases (see the OWF-GWT library on GitHub, and the WidgetProxyFunction
+ * class for how we use this class to mimic a native JavaScript version
+ * of a JavaScript library).
+ * 
+ * This wraps the given argument into a JavaScriptObject with the property
+ * "value", so both given JavaScriptObject return values and primitive
+ * (boolean, number, etc.) values are accessed via "somevar.value".
+ * Use JsReturn<T> to create a handler for a deferred result (like 
+ * an AJAX request, for example) and this class for implementing your
+ * own JavaScript method that will return a value to a JsReturn<T>
+ * callback.
+ * 
+ * This class only allows JavaScriptObject classes (and wrapped primitives
+ * like JsBoolean, JsNumber, JsString, etc.) to be returned from JavaScript
+ * functions. GWT does allow any Java object to be an argument or return value,
+ * but only if that value is handled opaquely. If there is a chance the 
+ * invoked method will be transforming objects
  * to/from JSON strings (e.g., to pass objects between different browser
- * scopes or to/from servers) then you should restrict your JsReturnValue
- * implementations to JavaScriptObject or accepted primitives.
- * It is difficult to construct a generic type that can accept
- * JavaScriptObject, String, Boolean, and Number but not any Object.
- * To try to avoid Java Objects in THIS class, the create(Object) method
- * is excluded, but made available in a subclass "ReturnValue<T>" that
- * can be used when the ReturnValues are known to NOT be JSON serialized.
+ * scopes or to/from servers) then use this class to implement your return
+ * value. If you want to be more lenient to allow other Object Class types,
+ * and you are sure they won't be converted to JSON or introspected, us
+ * ReturnValue.
+ * 
+ * Though type-wise, JsReturnValue could be a subclass of ReturnValue<T>,
+ * and inherit a lot of the same methods, we would also be inheriting
+ * the static "create(Object)" method, which we must avoid. So we do
+ * not want to make JsReturnValue a subclass of ReturnValue.
  */
 public class JsReturnValue<T extends JavaScriptObject> extends JavaScriptObject {
   
@@ -69,8 +90,6 @@ public class JsReturnValue<T extends JavaScriptObject> extends JavaScriptObject 
   }-*/;
   
   public final native JavaScriptObject asJavaScriptObject() /*-{
-    // I don't know what this will do to Java Objects, and get() cannot be overridden, so I will just return the object reference
-//    return this.value != null ? Object(this.value) : null;
     return this.value;
   }-*/;
   

@@ -1,167 +1,79 @@
 package jsfunction.jsfunctiontest;
 
-import jsfunction.gwt.EventListener;
-import jsfunction.gwt.JsError;
-import jsfunction.gwt.JsFunction;
-import jsfunction.gwt.JsResultOrError;
-import jsfunction.gwt.JsReturn;
-import jsfunction.gwt.NoArgsFunction;
-import jsfunction.gwt.VarArgsFunction;
+import jsfunction.gwt.functions.EventListener;
+import jsfunction.gwt.functions.NoArgsFunction;
+import jsfunction.gwt.functions.VarArgsFunction;
+import jsfunction.gwt.returns.JsReturn;
+import jsfunction.gwt.types.JsError;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.core.client.JsonUtils;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
+/**
+ * This is the test harness and shows an example of what a typical API use might use
+ * when passing function references into a GWT JavaScript Native Interface (JSNI)
+ * wrapper API that requires JavaScript function callbacks.
+ * 
+ * @author richkadel
+ */
 public class JsFunctionTest implements EntryPoint {
   
+  ExampleJSNIAPI api = new ExampleJSNIAPI();
+    
   private static int count = 1;
 
   @Override
   public void onModuleLoad() {
     
-    testWindowOnClick(new NoArgsFunction() {
+    // FIRST the simplest case. Passing in a function that takes no arguments and returns no results,
+    // as a simple callback. (Note window.onclick() does have an optional event, but we don't need
+    // to look at it. See the other mouse event handlers below for an example of using the event.)
+    
+    api.testWindowOnClick(new NoArgsFunction() { // window.onclick() callback
       public void callback() {
-        log("Made it", count++);
-        log("Now we will test an AJAX callback function and we SHOULD see two sets of: 401 \"Login Required\"");
+        api.log("Made it", count++); // console.log() takes any number of arguments. We wrap JS varargs in Object... when needed
+        api.log("Now we will test an AJAX callback function and we SHOULD see two sets of: 401 \"Login Required\"");
         
-        makeGWTAjaxCall(new JsReturn<GoogleError>() {
+        api.makeGWTAjaxCall(new JsReturn<GoogleError>() { // We show AJAX twice. 
+                                                          // Once with pure GWT Java, but leveraging JsFunction 
+                                                          // for a smarter API that knows the JSON object to be returned
           public void onReturn(GoogleError returnValue) {
-            log(returnValue.getCode(), returnValue.getMessage());
+            api.log(returnValue.getCode(), returnValue.getMessage());
           }
           public void onError(JsError jsError) {
-            log("Caught an error!: ", jsError.getMessage());
+            api.log("Caught an error!: ", jsError.getMessage());
           }
         });
         
-        makeJavaScriptAjaxCall(new JsReturn<GoogleError>() {
+        api.makeJavaScriptAjaxCall(new JsReturn<GoogleError>() { // This one is going directly to JavaScript XMLHttpRequest.
+                                                                 // Looks the same here, but the differences are in ExampleJSNIAPI
           public void onReturn(GoogleError returnValue) {
-            log(returnValue.getCode(), returnValue.getMessage());
+            api.log(returnValue.getCode(), returnValue.getMessage());
           }
           public void onError(JsError jsError) {
-            log("Caught an error!: ", jsError.getMessage());
+            api.log("Caught an error!: ", jsError.getMessage());
           }
         });
       }
     });
     
-    testWindowOnMouseMove(new VarArgsFunction() {
+    api.testWindowOnMouseMove(new VarArgsFunction() { // Depending on the JavaScript library, a callback may take any number of arguments.
+                                                      // We convert JavaScripts vararg-style "arguments" array into a GWT JsArrayMixed.
       public void callback(JsArrayMixed args) {
         MouseEvent mouseEvent = args.getObject(0);
-        log("mouse move", "x="+mouseEvent.getX(), "y="+mouseEvent.getY());
+        api.log("mouse move", "x="+mouseEvent.getX(), "y="+mouseEvent.getY());
       }
     });
     
-    testMouseDownWithEvent(new EventListener<MouseEvent>() {
+    api.testMouseDownWithEvent(new EventListener<MouseEvent>() { // Alternatively, callbacks with exactly one argument are often the pattern for EventListeners
+                                                                 // so the JsFunction EventListener<> function requires no vararg extraction and no casting.
       public void callback(MouseEvent mouseEvent) {
-        log("mouse down event", "x="+mouseEvent.getX(), "y="+mouseEvent.getY());
+        api.log("mouse down event", "x="+mouseEvent.getX(), "y="+mouseEvent.getY());
       }
     });
     
     RootPanel.get().add(new Label("Open the browser console and click this window to see test output."));
   }
-  
-  /**
-   * This method takes a Java-oriented NoArgsFunction callback handle and
-   * converts it into a JsFunction, which is actually a JavaScript-ready
-   * pointer to a JavaScript function.
-   * @param noArgsFunction
-   */
-  private void testWindowOnClick(NoArgsFunction noArgsFunction) {
-    nativeWindowOnClick(JsFunction.create(noArgsFunction));
-  }
-
-  private native void nativeWindowOnClick(JsFunction callback) /*-{
-    $wnd.onclick = callback
-  }-*/;
-
-  private void testWindowOnMouseMove(VarArgsFunction varArgsFunction) {
-    nativeWindowOnMouseMove(JsFunction.create(varArgsFunction));
-  }
-
-  private native void nativeWindowOnMouseMove(JsFunction varArgsCallback) /*-{
-    $wnd.onmousemove = varArgsCallback
-  }-*/;
-
-  private void testMouseDownWithEvent(EventListener<MouseEvent> eventListener) {
-    nativeMouseDownWithEvent(JsFunction.create(eventListener));
-  }
-
-  private native void nativeMouseDownWithEvent(JsFunction eventListener) /*-{
-    $wnd.onmousedown = eventListener
-  }-*/;
-
-  public void log(Object... varargs) {
-    nativeLog(JsFunction.varArgsToMixedArray(varargs));
-  }
-  
-  public native void nativeLog(JsArrayMixed arguments) /*-{
-    console.log.apply(console, arguments);
-  }-*/;
-  
-  public void makeGWTAjaxCall(final JsReturn<GoogleError> result) {
-    RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, "https://www.googleapis.com/appstate/v1/states/");
-      // This will normally return an error without an authenticated client id
-      // but that's OK for testing.  The error is also in JSON, so we'll pretend
-      // it is our expected response.
-  
-    try {
-			builder.sendRequest(null, new RequestCallback() {
-        
-        public void onError(Request request, Throwable caught) {
-          result.onError(JsError.create(caught));
-        }
-  
-        public void onResponseReceived(Request request, Response response) {
-          if (response.getStatusCode() == 200) { // normally this is what we want, but not for this test
-            result.onError(JsError.create(new Throwable("gwt: Was not expecting success")));
-          } else if (response.getStatusCode() == 401){
-						GoogleError googleError = JsonUtils.safeEval(response.getText());
-            result.onReturn(googleError);
-          } else {
-            result.onError(JsError.create(new Throwable("gwt: Unexpected error status code "+response.getStatusCode())));
-          }
-        }
-      });
-    } catch (RequestException e) {
-      result.onError(JsError.create(e));
-    }
-  }
-  
-  public void makeJavaScriptAjaxCall(final JsReturn<GoogleError> result) {
-    makeNativeJavaScriptAjaxCall(JsFunction.create(result));
-  }
-
-  private native void makeNativeJavaScriptAjaxCall(JsResultOrError jsResult) /*-{
-    
-    var xmlhttp = new XMLHttpRequest();
-    
-    xmlhttp.onload = function() {
-      try {
-        if (xmlhttp.status == 200) {
-          throw new Error("js: Was not expecting success");
-        } else if (xmlhttp.status == 401) {
-          var googleError = JSON.parse(xmlhttp.responseText);
-          jsResult.result(googleError);
-        } else {
-          throw new Error("js: Unexpected error status code "+xmlhttp.status);
-        }
-      } catch (e) {
-        jsResult.error(e)
-      }
-    }
-    
-    xmlhttp.onerror = function() {
-      jsResult.error(new Error("XMLHttpRequest error"));
-    }
-    
-    xmlhttp.open("GET", "https://www.googleapis.com/appstate/v1/states/", true);
-    xmlhttp.send();
-  }-*/;
 }

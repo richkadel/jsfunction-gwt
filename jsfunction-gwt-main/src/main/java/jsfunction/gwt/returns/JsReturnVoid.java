@@ -1,4 +1,6 @@
-package jsfunction.gwt;
+package jsfunction.gwt.returns;
+
+import jsfunction.gwt.types.JsVoid;
 
 /**
  * Allows you to call an asynchronous method but still handle potential exceptions
