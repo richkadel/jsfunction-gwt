@@ -107,7 +107,7 @@ public final class JsFunction extends JavaScriptObject {
   public static native JsResultOrError create(JsReturn<?> deferredFunctionResult) /*-{
     return { // Constructs a JsResultOrError object
       result : function(result) {
-        @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/JsReturn;Ljsfunction/gwt/JsReturnValue;)(deferredFunctionResult, result)
+        @jsfunction.gwt.JsFunction::invoke(Ljsfunction/gwt/JsReturn;Ljsfunction/gwt/JsReturnValue;)(deferredFunctionResult, {value:result})
       },
       error : function(error) {
         @jsfunction.gwt.JsFunction::error(Ljsfunction/gwt/JsReturn;Ljsfunction/gwt/JsError;)(deferredFunctionResult, error)
