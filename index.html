@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="JsFunction-GWT : Extensive support for passing GWT Java functions to JavaScript APIs that require JavaScript functions">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>JsFunction-GWT</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/richkadel/jsfunction-gwt">View on GitHub</a>
+
+          <h1 id="project_title">JsFunction-GWT</h1>
+          <h2 id="project_tagline">Extensive support for passing GWT Java functions to JavaScript APIs that require JavaScript functions</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/richkadel/jsfunction-gwt/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/richkadel/jsfunction-gwt/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>This library used to be part of the <a href="http://richkadel.github.io/cesium-gwt/">Cesium-GWT</a> repository, 
+but it became too useful to other non-Cesium projects (such as my
+<a href="https://github.com/richkadel/owf-gwt">OZONE Widget Framework GWT wrappers</a>),
+so I made it an independent project. </p>
+
+<p>OWF required extensive enhancements to JsFunction, ultimately
+forcing me to cover a wide array of cases of function call interactions between GWT and JavaScript.</p>
+
+<p>A key tenet of JsFunction is to provide support for the strong type checking built into Java,
+which not only makes the software more reliable, but it also makes development faster by
+ensuring the code that compiles is more likely to work the first time, and by allowing Integrated
+Development Environments (IDEs) like Eclipse or NetBeans to provide automated code completion and
+other syntax checking and highlighting. JsFunction makes extensive use of Java Generics to support
+developer-provided classes as well as standard JavaScript types and primitives.</p>
+
+<p>The library now supports:</p>
+
+<ul>
+<li>Passing Java functions to javascript for future invocation (e.g., callbacks)</li>
+<li>Calling JavaScript functions that return results asynchronously (that is, the JavaScript method
+will invoke a Java result handler when the result is available)</li>
+<li>No-argument functions and functions with variable length argument lists </li>
+<li>Optional support for passing non-JavaScript Java Objects as types or return values (which can be 
+handy, but use with caution as these objects cannot be serialized,such as with JSON)</li>
+</ul>
+
+<h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<h3>
+<a name="the-following-callback-can-be-passed-into-a-javascript-onclick-handler" class="anchor" href="#the-following-callback-can-be-passed-into-a-javascript-onclick-handler"><span class="octicon octicon-link"></span></a>The following callback can be passed into a JavaScript "onclick" handler:</h3>
+
+<pre><code>testWindowOnClick(new NoArgsFunction() {
+  public void callback() {
+    log("Made it", count++);
+  }
+});
+</code></pre>
+
+<p><em>To turn the Java callback into an actual JavaScript function, we call JsFunction.create().</em>
+<em>Typically, we implement a wrapper method to hide that detail from an API user:</em></p>
+
+<pre><code>private void testWindowOnClick(NoArgsFunction noArgsFunction) {
+  nativeWindowOnClick(JsFunction.create(noArgsFunction));
+}
+</code></pre>
+
+<p><em>Then we invoke the JavaScript from GWT:</em></p>
+
+<pre><code>private native void nativeWindowOnClick(JsFunction callback) /*-{
+  $wnd.onclick = callback
+}-*/;
+</code></pre>
+
+<p><em>For more examples,</em> review the JsFunctionTest class in the 
+<a href="https://github.com/richkadel/jsfunction-gwt/tree/master/jsfunction-gwt-test/src/main/java/jsfunction/jsfunctiontest">jsfunction.jsfunctiontest</a>
+test case package.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">JsFunction-GWT maintained by <a href="https://github.com/richkadel">richkadel</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
