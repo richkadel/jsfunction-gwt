@@ -64,7 +64,7 @@ public class ExampleJSNIAPI {
       // it is our expected response.
   
     try {
-			builder.sendRequest(null, new RequestCallback() {
+      builder.sendRequest(null, new RequestCallback() {
         
         public void onError(Request request, Throwable caught) {
           result.onError(JsError.create(caught));
