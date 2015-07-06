@@ -1,3 +1,5 @@
+**Note that this library is now maintained in the _Harmonia Holdings Group_ [GitHub site for JSFunction-GWT](https://github.com/Harmonia-Holdings-Group/jsfunction-gwt)**
+
 jsfunction-gwt
 ==============
 
